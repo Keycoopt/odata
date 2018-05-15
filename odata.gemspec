@@ -18,12 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = %w{lib}
 
-  spec.add_development_dependency 'bundler', '~> 2.1'
+  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'simplecov', '~> 0.18'
-  spec.add_development_dependency 'rspec', '~> 3.0.0'
-  spec.add_development_dependency 'vcr', '~> 2.9.2'
-  spec.add_development_dependency 'timecop', '~> 0.7.1'
+  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'vcr'
+  spec.add_development_dependency 'timecop'
 
   spec.add_dependency 'nokogiri', '~> 1.6.2'
   spec.add_dependency 'typhoeus', '~> 0.6.8'
