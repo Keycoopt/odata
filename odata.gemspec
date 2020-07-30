@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'timecop'
 
-  spec.add_dependency 'nokogiri', '~> 1.6.2'
+  spec.add_dependency 'nokogiri', '~> 1.10'
   spec.add_dependency 'typhoeus', '~> 0.6.8'
 end
