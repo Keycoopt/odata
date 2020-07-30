@@ -4,11 +4,6 @@
 
 **BETA QUALITY, at best — You've been warned**
 
-[![Build Status](https://travis-ci.org/ruby-odata/odata.svg?branch=master)](https://travis-ci.org/ruby-odata/odata)
-[![Gem Version](https://badge.fury.io/rb/odata.svg)](http://badge.fury.io/rb/odata)
-[![Dependency Status](https://gemnasium.com/ruby-odata/odata.svg)](https://gemnasium.com/ruby-odata/odata)
-[![Documentation](http://inch-ci.org/github/ruby-odata/odata.png?branch=master)](http://rubydoc.info/github/ruby-odata/odata/master/frames)
-
 The OData gem provides a simple wrapper around the OData API protocol. It has
 the ability to automatically inspect compliant APIs and expose the relevant
 Ruby objects dynamically. It also provides a set of code generation tools for
