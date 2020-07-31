@@ -9,6 +9,8 @@ http_interactions:
     headers:
       User-Agent:
       - Typhoeus - https://github.com/typhoeus/typhoeus
+      DataServiceVersion:
+      - '3.0'
   response:
     status:
       code: 200
@@ -21,7 +23,7 @@ http_interactions:
       Content-Type:
       - application/xml;charset=utf-8
       Server:
-      - Microsoft-IIS/8.0
+      - Microsoft-IIS/10.0
       X-Content-Type-Options:
       - nosniff
       DataServiceVersion:
@@ -38,10 +40,8 @@ http_interactions:
       - Accept, Origin, Content-Type, MaxDataServiceVersion
       Access-Control-Expose-Headers:
       - DataServiceVersion
-      Set-Cookie:
-      - ARRAffinity=a9aad020fb0149d28d0efdb1e8bab24ad3481a904c8fb94abced8813c01ee265;Path=/;Domain=services.odata.org
       Date:
-      - Sat, 19 Jul 2014 03:09:41 GMT
+      - Fri, 31 Jul 2020 07:22:20 GMT
     body:
       encoding: UTF-8
       string: <?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"><edmx:DataServices
@@ -159,6 +159,6 @@ http_interactions:
         " String="http://www.odata.org/" /></Annotations></Schema></edmx:DataServices></edmx:Edmx>
     http_version: '1.1'
     adapter_metadata:
-      effective_url: http://services.odata.org/OData/OData.svc/$metadata
-  recorded_at: Sat, 19 Jul 2014 03:09:41 GMT
-recorded_with: VCR 2.9.2
+      effective_url: https://services.odata.org/OData/OData.svc/$metadata
+  recorded_at: Fri, 31 Jul 2020 07:22:21 GMT
+recorded_with: VCR 2.9.3

@@ -115,7 +115,7 @@ module OData
     # Executes the query to get a count of entities.
     # @return [Integer]
     def count
-      url_chunk = "#{entity_set.name}/$count?#{assemble_criteria}"
+      url_chunk = "#{entity_set.name}/$count?#{assemble_criteria}" # TODO: escape GET params
       entity_set.service.execute(url_chunk).body.to_i
     end
 
