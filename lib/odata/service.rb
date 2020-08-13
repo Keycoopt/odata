@@ -125,7 +125,7 @@ module OData
     # @return [Typhoeus::Response]
     def execute(url_chunk, additional_options = {})
       request = ::Typhoeus::Request.new(
-          URI.escape("#{service_url}/#{url_chunk}"),
+          Addressable::URI.escape("#{service_url}/#{url_chunk}"),
           options[:typhoeus].merge({ method: :get
                                    })
                             .merge(additional_options)
@@ -257,7 +257,7 @@ module OData
         ::Nokogiri::XML(data).remove_namespaces!
       else # From a URL
         METADATA_TIMEOUTS.each do |timeout|
-          response = ::Typhoeus::Request.get(URI.escape("#{service_url}/$metadata"),
+          response = ::Typhoeus::Request.get(Addressable::URI.escape("#{service_url}/$metadata"),
                                              options[:typhoeus].merge(timeout: timeout))
           break unless response.timed_out?
         end

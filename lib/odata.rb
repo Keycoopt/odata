@@ -1,3 +1,4 @@
+require 'addressable'
 require 'uri'
 require 'date'
 require 'bigdecimal'

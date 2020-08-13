@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'nokogiri', '~> 1.10'
   spec.add_dependency 'typhoeus', '~> 0.6.8'
+  spec.add_dependency 'addressable'
 end
