@@ -47,14 +47,28 @@ module OData
       end
     end
 
-    # Returns a list of entities exposed by the service
+    # Returns a list of `EntityType`s exposed by the service
+    # @return Array<String>
     def entity_types
-      @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
+      @entity_types ||= schemas.map do |namespace, schema|
+        schema.entity_types.map do |entity_type|
+          "#{namespace}.#{entity_type}"
+        end
+      end.flatten
     end
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name
     def entity_sets
       entity_container.entity_sets
+    end
+
+    def schemas
+      @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
+        [
+          schema_xml.attributes['Namespace'].value,
+          Schema.new(schema_xml, self)
+        ]
+      end.to_h
     end
 
     # Returns a list of ComplexTypes used by the service
@@ -285,7 +299,7 @@ module OData
       klass = ::OData::PropertyRegistry[value_type]
 
       if klass.nil? && value_type =~ /^#{namespace}\./
-        type_name = value_type.gsub(/^#{namespace}\./, '')
+        type_name = value_type
         property = ::OData::ComplexType.new(name: type_name, service: self)
       elsif klass.nil?
         raise RuntimeError, "Unknown property type: #{value_type}"
