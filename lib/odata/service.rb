@@ -117,6 +117,17 @@ module OData
       "#<#{self.class.name}:#{self.object_id} name='#{name}' service_url='#{self.service_url}'>"
     end
 
+    def entity_container
+      @entity_container ||= begin
+        container_xml = metadata.xpath("//EntityContainer").first
+        OData::EntityContainer.new(container_xml, self)
+      end
+    end
+
+    def entity_sets
+      entity_container.entity_sets
+    end
+
     # Retrieves the EntitySet associated with a specific EntityType by name
     #
     # @param entity_set_name [to_s] the name of the EntitySet desired
