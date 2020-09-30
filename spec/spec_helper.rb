@@ -21,7 +21,7 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |config|
-  include XMLHelper
+  config.include XMLHelper
 
   if config.files_to_run.one?
     config.default_formatter = 'doc'
