@@ -30,7 +30,6 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:entity_sets) }
     it { expect(subject).to respond_to(:complex_types) }
     it { expect(subject).to respond_to(:associations) }
-    it { expect(subject).to respond_to(:namespace) }
     it { expect(subject).to respond_to(:entity_container) }
     it { expect(subject).to respond_to(:[])}
   end
@@ -69,7 +68,7 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject.navigation_properties['Product']['Categories']).to be_a(OData::Association) }
   end
 
-  describe '#namespace' do
-    it { expect(subject.namespace).to eq('ODataDemo') }
+  describe "#schemas" do
+    it { expect(multiple_schemas_csdl.schemas.keys).to eq(["SFODataSet", "SFOData"]) }
   end
 end
