@@ -182,6 +182,10 @@ module OData
       @service ||= OData::ServiceRegistry[service_name]
     end
 
+    def schema
+      @schema ||= service.schemas[namespace]
+    end
+
     def set_property(name, property)
       properties[name.to_s] = property
     end
