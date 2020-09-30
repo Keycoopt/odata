@@ -13,10 +13,6 @@ module OData
       @namespace ||= metadata.attributes['Namespace'].value
     end
 
-    def name
-      @name ||= metadata.attributes['Name'].value
-    end
-
     def entity_types
       @entity_types ||= metadata.xpath('.//EntityType').map do |entity|
         entity.attributes['Name'].value
