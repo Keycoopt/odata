@@ -33,6 +33,7 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:namespace) }
     it { expect(subject).to respond_to(:entity_container) }
     it { expect(subject).to respond_to(:[])}
+    it { expect(subject).to respond_to(:metadata) }
   end
 
   describe '#service_url' do

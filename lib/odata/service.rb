@@ -225,6 +225,12 @@ module OData
       @logger = custom_logger
     end
 
+    def metadata
+      @metadata ||= lambda {
+        read_metadata
+      }.call
+    end
+
     private
 
     def default_options
@@ -234,12 +240,6 @@ module OData
               timeout: HTTP_TIMEOUT
           }
       }
-    end
-
-    def metadata
-      @metadata ||= lambda {
-        read_metadata
-      }.call
     end
 
     def read_metadata
