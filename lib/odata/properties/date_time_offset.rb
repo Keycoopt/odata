@@ -2,7 +2,6 @@ module OData
   module Properties
     # Defines the DateTimeOffset OData type.
     class DateTimeOffset < OData::Properties::DateTime
-
       # The OData type name
       def type
         'Edm.DateTimeOffset'

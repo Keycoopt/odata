@@ -19,6 +19,15 @@ module OData
       end
     end
 
+    def complex_types
+      @complex_types ||= metadata.xpath('.//ComplexType').map do |complex_type|
+        [
+          complex_type.attributes['Name'].value,
+          OData::ComplexType.new(name: complex_type.attributes['Name'].value, schema: self)
+        ]
+      end.to_h
+    end
+
     # Returns a more compact inspection of the schema object
     def inspect
       "#<#{self.class.name}:#{self.object_id} namespace='#{namespace}'>"

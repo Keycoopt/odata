@@ -73,7 +73,14 @@ module OData
 
     # Returns a list of ComplexTypes used by the service
     def complex_types
-      @complex_types ||= metadata.xpath('//ComplexType').collect {|entity| entity.attributes['Name'].value}
+      @complex_types ||= schemas.map do |namespace, schema|
+        schema.complex_types.map do |name, complex_type|
+          [
+            "#{namespace}.#{name}",
+            complex_type
+          ]
+        end.to_h
+      end.reduce({}, :merge)
     end
 
     # Returns the associations defined by the service
@@ -298,16 +305,16 @@ module OData
 
     def process_property_from_xml(property_xml)
       property_name = property_xml.attributes['Name'].value
-      value_type = property_xml.attributes['Type'].value
+      property_type = property_xml.attributes['Type'].value
       property_options = {}
 
-      klass = ::OData::PropertyRegistry[value_type]
+      klass = ::OData::PropertyRegistry[property_type]
 
-      if klass.nil? && value_type =~ /^#{namespace}\./
-        type_name = value_type
-        property = ::OData::ComplexType.new(name: type_name, service: self)
+      if klass.nil? && property_type =~ /^#{"SFOData"}\./
+        namespace, _, type_name = property_type.rpartition(".")
+        property = ::OData::ComplexType.new(name: type_name, schema: schemas["SFOData"])
       elsif klass.nil?
-        raise RuntimeError, "Unknown property type: #{value_type}"
+        raise RuntimeError, "Unknown property type: #{property_type}"
       else
         property_options[:allows_nil] = false if property_xml.attributes['Nullable'] == 'false'
         property = klass.new(property_name, nil, property_options)
