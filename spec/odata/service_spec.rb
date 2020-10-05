@@ -2,15 +2,8 @@ require 'spec_helper'
 
 describe OData::Service, vcr: {cassette_name: 'service_specs'} do
   let(:subject) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo') }
-<<<<<<< HEAD
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
-=======
-  let(:entity_types) { %w{ODataDemo.Product ODataDemo.FeaturedProduct ODataDemo.ProductDetail ODataDemo.Category ODataDemo.Supplier ODataDemo.Person ODataDemo.Customer ODataDemo.Employee ODataDemo.PersonDetail ODataDemo.Advertisement} }
-  let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
-  let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
-  let(:complex_types) { %w{ODataDemo.Address} }
->>>>>>> WIP on complex types
   let(:associations) { %w{Product_Categories_Category_Products
                           Product_Supplier_Supplier_Products
                           Product_ProductDetail_ProductDetail_Product
