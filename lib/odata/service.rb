@@ -40,6 +40,13 @@ module OData
       @name ||= options[:name] || service_url
     end
 
+    def entity_container
+      @entity_container ||= begin
+        container_xml = metadata.xpath("//EntityContainer").first
+        OData::EntityContainer.new(container_xml, self)
+      end
+    end
+
     # Returns a list of entities exposed by the service
     def entity_types
       @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
@@ -47,12 +54,7 @@ module OData
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name
     def entity_sets
-      @entity_sets ||= Hash[metadata.xpath('//EntityContainer/EntitySet').collect {|entity|
-        [
-          entity.attributes['EntityType'].value.gsub("#{namespace}.", ''),
-          entity.attributes['Name'].value
-        ]
-      }]
+      entity_container.entity_sets
     end
 
     # Returns a list of ComplexTypes used by the service
@@ -106,16 +108,7 @@ module OData
     # @param entity_set_name [to_s] the name of the EntitySet desired
     # @return [OData::EntitySet] an OData::EntitySet to query
     def [](entity_set_name)
-      xpath_query = "//EntityContainer/EntitySet[@Name='#{entity_set_name}']"
-      entity_set_node = metadata.xpath(xpath_query).first
-      raise ArgumentError, "Unknown Entity Set: #{entity_set_name}" if entity_set_node.nil?
-      container_name = entity_set_node.parent.attributes['Name'].value
-      entity_type_name = entity_set_node.attributes['EntityType'].value.gsub(/#{namespace}\./, '')
-      OData::EntitySet.new(name: entity_set_name,
-                           namespace: namespace,
-                           type: entity_type_name.to_s,
-                           service_name: name,
-                           container: container_name)
+      entity_container[entity_set_name]
     end
 
     # Execute a request against the service

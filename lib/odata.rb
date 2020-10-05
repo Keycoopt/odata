@@ -22,6 +22,7 @@ require 'odata/query/result'
 require 'odata/query'
 require 'odata/service'
 require 'odata/service_registry'
+require 'odata/entity_container.rb'
 
 require 'odata/railtie' if defined?(::Rails)
 

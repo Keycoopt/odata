@@ -3,8 +3,6 @@ require 'spec_helper'
 describe OData::Service, vcr: {cassette_name: 'service_specs'} do
   let(:subject) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo') }
   let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
-  let(:entity_sets) { %w{Products ProductDetails Categories Suppliers Persons PersonDetails Advertisements} }
-  let(:entity_set_types) { %w{Product ProductDetail Category Supplier Person PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
   let(:associations) { %w{Product_Categories_Category_Products
                           Product_Supplier_Supplier_Products
@@ -33,6 +31,8 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:complex_types) }
     it { expect(subject).to respond_to(:associations) }
     it { expect(subject).to respond_to(:namespace) }
+    it { expect(subject).to respond_to(:entity_container) }
+    it { expect(subject).to respond_to(:[])}
   end
 
   describe '#service_url' do
@@ -42,12 +42,6 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
   describe '#entity_types' do
     it { expect(subject.entity_types.size).to eq(10) }
     it { expect(subject.entity_types).to eq(entity_types) }
-  end
-
-  describe '#entity_sets' do
-    it { expect(subject.entity_sets.size).to eq(7) }
-    it { expect(subject.entity_sets.keys).to eq(entity_set_types) }
-    it { expect(subject.entity_sets.values).to eq(entity_sets) }
   end
 
   describe '#complex_types' do
@@ -65,6 +59,10 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     end
   end
 
+  describe '#entity_container' do
+    it { expect(subject.entity_container).to be_a(OData::EntityContainer) }
+  end
+
   describe '#navigation_properties' do
     it { expect(subject).to respond_to(:navigation_properties) }
     it { expect(subject.navigation_properties['Product'].size).to eq(3) }
@@ -73,10 +71,5 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '#namespace' do
     it { expect(subject.namespace).to eq('ODataDemo') }
-  end
-
-  describe '#[]' do
-    it { expect(subject['Products']).to be_a(OData::EntitySet) }
-    it { expect {subject['Nonexistant']}.to raise_error(ArgumentError) }
   end
 end
