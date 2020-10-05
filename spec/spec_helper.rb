@@ -4,10 +4,13 @@ SimpleCov.start do
 end
 
 require 'odata'
+require 'helpers/xml_helper'
 
 require 'securerandom'
 require 'timecop'
 require 'vcr'
+
+RSPEC_ROOT = File.dirname(__FILE__)
 
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
@@ -18,6 +21,8 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |config|
+  include XMLHelper
+
   if config.files_to_run.one?
     config.default_formatter = 'doc'
   end
