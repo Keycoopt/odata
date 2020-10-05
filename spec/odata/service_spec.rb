@@ -33,6 +33,7 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:complex_types) }
     it { expect(subject).to respond_to(:associations) }
     it { expect(subject).to respond_to(:namespace) }
+    it { expect(subject).to respond_to(:entity_container) }
   end
 
   describe '#service_url' do
@@ -63,6 +64,10 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
         expect(association).to be_a(OData::Association)
       end
     end
+  end
+
+  describe '#entity_container' do
+    it { expect(subject.entity_container).to be_a(OData::EntityContainer) }
   end
 
   describe '#navigation_properties' do

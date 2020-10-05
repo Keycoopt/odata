@@ -40,6 +40,13 @@ module OData
       @name ||= options[:name] || service_url
     end
 
+    def entity_container
+      @entity_container ||= begin
+        container_xml = metadata.xpath("//EntityContainer").first
+        OData::EntityContainer.new(container_xml, self)
+      end
+    end
+
     # Returns a list of entities exposed by the service
     def entity_types
       @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
