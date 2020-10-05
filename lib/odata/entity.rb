@@ -7,8 +7,6 @@ module OData
   class Entity
     # The Entity type name
     attr_reader :type
-    # The OData::Service's namespace
-    attr_reader :namespace
     # The OData::Service's identifying name
     attr_reader :service_name
     # Links to other OData entitites
@@ -22,16 +20,19 @@ module OData
     # @param options [Hash]
     def initialize(options = {})
       @type = options[:type]
-      @namespace = options[:namespace]
       @service_name = options[:service_name]
       @links = options[:links] || {}
       @errors = []
     end
 
+    def namespace
+      @namespace ||= type.rpartition(".").first
+    end
+
     # Returns name of Entity from Service specified type.
     # @return [String]
     def name
-      @name ||= type.gsub(/#{namespace}\./, '')
+      @name ||= type.split('.').last
     end
 
     # Get property value
@@ -156,10 +157,12 @@ module OData
 
       if klass.nil? && value_type =~ /^#{namespace}\./
         type_name = value_type.gsub(/^#{namespace}\./, '')
-        property = ::OData::ComplexType.new(name: type_name, service: service)
+        property = ::OData::ComplexType.new(name: type_name, schema: schema)
+
         value.element_children.each do |node|
           property[node.name] = node.content
         end
+
         property
       elsif klass.nil?
         raise RuntimeError, "Unknown property type: #{value_type}"
@@ -179,6 +182,10 @@ module OData
 
     def service
       @service ||= OData::ServiceRegistry[service_name]
+    end
+
+    def schema
+      @schema ||= service.schemas[namespace]
     end
 
     def set_property(name, property)

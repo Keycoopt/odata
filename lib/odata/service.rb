@@ -47,9 +47,14 @@ module OData
       end
     end
 
-    # Returns a list of entities exposed by the service
+    # Returns a list of `EntityType`s exposed by the service
+    # @return Array<String>
     def entity_types
-      @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
+      @entity_types ||= schemas.map do |namespace, schema|
+        schema.entity_types.map do |entity_type|
+          "#{namespace}.#{entity_type}"
+        end
+      end.flatten
     end
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name
@@ -57,9 +62,25 @@ module OData
       entity_container.entity_sets
     end
 
+    def schemas
+      @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
+        [
+          schema_xml.attributes['Namespace'].value,
+          Schema.new(schema_xml, self)
+        ]
+      end.to_h
+    end
+
     # Returns a list of ComplexTypes used by the service
     def complex_types
-      @complex_types ||= metadata.xpath('//ComplexType').collect {|entity| entity.attributes['Name'].value}
+      @complex_types ||= schemas.map do |namespace, schema|
+        schema.complex_types.map do |name, complex_type|
+          [
+            "#{namespace}.#{name}",
+            complex_type
+          ]
+        end.to_h
+      end.reduce({}, :merge)
     end
 
     # Returns the associations defined by the service
@@ -77,25 +98,19 @@ module OData
     # NavigationProperty elements.
     # @return [Hash<Hash<OData::Association>>]
     def navigation_properties
-      @navigation_properties ||= Hash[metadata.xpath('//EntityType').collect do |entity_type_def|
-        entity_type_name = entity_type_def.attributes['Name'].value
+      @navigation_properties ||= metadata.xpath('//EntityType').map do |entity_type_def|
         [
-            entity_type_name,
-            Hash[entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              relationship_name = nav_property_def.attributes['Relationship'].value
-              relationship_name.gsub!(/^#{namespace}\./, '')
-              [
-                  nav_property_def.attributes['Name'].value,
-                  associations[relationship_name]
-              ]
-            end]
+          entity_type_def.attributes['Name'].value,
+          entity_type_def.xpath('./NavigationProperty').map do |nav_property_def|
+            relationship_name = nav_property_def.attributes['Relationship'].value
+            namespace, _, relationship_name = relationship_name.rpartition(".")
+            [
+              nav_property_def.attributes['Name'].value,
+              associations[relationship_name]
+            ]
+          end.to_h
         ]
-      end]
-    end
-
-    # Returns the namespace defined on the service's schema
-    def namespace
-      @namespace ||= metadata.xpath('//Schema').first.attributes['Namespace'].value
+      end.to_h
     end
 
     # Returns a more compact inspection of the service object
@@ -279,16 +294,16 @@ module OData
 
     def process_property_from_xml(property_xml)
       property_name = property_xml.attributes['Name'].value
-      value_type = property_xml.attributes['Type'].value
+      property_type = property_xml.attributes['Type'].value
       property_options = {}
 
-      klass = ::OData::PropertyRegistry[value_type]
+      klass = ::OData::PropertyRegistry[property_type]
 
-      if klass.nil? && value_type =~ /^#{namespace}\./
-        type_name = value_type.gsub(/^#{namespace}\./, '')
-        property = ::OData::ComplexType.new(name: type_name, service: self)
+      if klass.nil? && property_type =~ /^#{"SFOData"}\./
+        namespace, _, type_name = property_type.rpartition(".")
+        property = ::OData::ComplexType.new(name: type_name, schema: schemas["SFOData"])
       elsif klass.nil?
-        raise RuntimeError, "Unknown property type: #{value_type}"
+        raise RuntimeError, "Unknown property type: #{property_type}"
       else
         property_options[:allows_nil] = false if property_xml.attributes['Nullable'] == 'false'
         property = klass.new(property_name, nil, property_options)

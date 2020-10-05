@@ -17,17 +17,22 @@ module OData
       @name ||= metadata.attributes["Name"].value
     end
 
-    # The EntityContainer's namespace
-    def namespace
-      service.namespace
+    def schema
+      @schema ||= OData::Schema.new(metadata.ancestors("Schema").first, service)
     end
 
-    # Returns a hash of EntitySet names keyed to their respective EntityType name
+    # The EntityContainer's namespace
+    def namespace
+      schema.namespace
+    end
+
+    # Returns a hash of EntitySet names and their respective EntityTypes.
+    # @return [Hash<String, String>]
     def entity_sets
-      @entity_sets ||= metadata.xpath(".//EntitySet").map do |entity_set|
+      @entity_sets ||= metadata.xpath('.//EntitySet').map do |entity|
         [
-          entity_set.attributes['EntityType'].value.gsub("#{namespace}.", ''),
-          entity_set.attributes['Name'].value
+          entity.attributes['Name'].value,
+          entity.attributes['EntityType'].value
         ]
       end.to_h
     end
@@ -42,11 +47,11 @@ module OData
 
       raise ArgumentError, "Unknown Entity Set: #{entity_set_name}" if entity_set_node.nil?
 
-      entity_type_name = entity_set_node.attributes['EntityType'].value.gsub(/#{namespace}\./, '')
+      entity_type = entity_set_node.attributes['EntityType'].value
 
       OData::EntitySet.new(name: entity_set_name,
                            namespace: namespace,
-                           type: entity_type_name.to_s,
+                           type: entity_type,
                            service_name: service.name,
                            container: name)
     end

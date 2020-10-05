@@ -5,8 +5,9 @@ describe OData::ComplexType, vcr: {cassette_name: 'complex_type_specs'} do
     OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo')
   end
 
-  let(:subject) { OData::ComplexType.new(name: 'Address', service: service) }
   let(:service) { OData::ServiceRegistry['ODataDemo'] }
+  let(:schema)  { service.schemas["ODataDemo"] }
+  let(:subject) { OData::ComplexType.new(name: 'Address', schema: schema) }
 
   it { expect(subject).to respond_to(:name) }
   it { expect(subject).to respond_to(:namespace) }

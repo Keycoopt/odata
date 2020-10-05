@@ -14,7 +14,7 @@ describe OData::Query::Result, vcr: {cassette_name: 'query/result_specs'} do
     it 'returns just OData::Entities of the right type' do
       subject.each do |entity|
         expect(entity).to be_a(OData::Entity)
-        expect(entity.type).to eq('Product')
+        expect(entity.type).to eq('ODataDemo.Product')
       end
     end
   end

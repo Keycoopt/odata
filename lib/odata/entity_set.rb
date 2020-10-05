@@ -60,8 +60,7 @@ module OData
     # If count is 1 it returns the single entity, otherwise its an array of entities
     # @return [OData::EntitySet]
     def first(count = 1)
-      query = OData::Query.new(self).limit(count)
-      result = service.execute(query)
+      result = service.execute(query.limit(count))
       entities = service.find_entities(result)
       res = count == 1 ? single_entity_from_xml(entities) : multiple_entities_from_xml(entities)
       res
@@ -134,7 +133,8 @@ module OData
       {
           namespace:    namespace,
           service_name: service_name,
-          type:         type
+          type:         type,
+          name:         name,
       }
     end
 

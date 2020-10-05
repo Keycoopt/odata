@@ -14,7 +14,7 @@ module OData
       validate_options(options)
 
       @name = options[:name].to_s
-      @service = options[:service]
+      @schema = options[:schema]
 
       collect_properties
     end
@@ -28,7 +28,7 @@ module OData
     # Returns the namespace this ComplexType belongs to.
     # @return [String]
     def namespace
-      @namespace ||= service.namespace
+      @namespace ||= schema.namespace
     end
 
     # Returns a list of this ComplexType's property names.
@@ -67,10 +67,18 @@ module OData
       end
     end
 
+    def inspect
+      "#<#{self.class.name}:#{self.object_id} name='#{name}'>"
+    end
+
     private
 
     def service
-      @service
+      schema.service
+    end
+
+    def schema
+      @schema
     end
 
     def properties
