@@ -42,14 +42,13 @@ module OData
 
       raise ArgumentError, "Unknown Entity Set: #{entity_set_name}" if entity_set_node.nil?
 
-      container_name = entity_set_node.parent.attributes['Name'].value
       entity_type_name = entity_set_node.attributes['EntityType'].value.gsub(/#{namespace}\./, '')
 
       OData::EntitySet.new(name: entity_set_name,
                            namespace: namespace,
                            type: entity_type_name.to_s,
-                           service_name: name,
-                           container: container_name)
+                           service_name: service.name,
+                           container: name)
     end
 
     # Returns a more compact inspection of the EntityContainer object
