@@ -77,20 +77,22 @@ module OData
     # NavigationProperty elements.
     # @return [Hash<Hash<OData::Association>>]
     def navigation_properties
-      @navigation_properties ||= Hash[metadata.xpath('//EntityType').collect do |entity_type_def|
+      @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
         entity_type_name = entity_type_def.attributes['Name'].value
+
         [
             entity_type_name,
-            Hash[entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              relationship_name = nav_property_def.attributes['Relationship'].value
-              relationship_name.gsub!(/^#{namespace}\./, '')
+            entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
+              relationship = nav_property_def.attributes['Relationship'].value
+              namespace, _, relationship_name = relationship.rpartition('.')
+
               [
                   nav_property_def.attributes['Name'].value,
                   associations[relationship_name]
               ]
-            end]
+            end.to_h
         ]
-      end]
+      end.to_h
     end
 
     # Returns the namespace defined on the service's schema

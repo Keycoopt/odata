@@ -67,11 +67,17 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject.namespace).to eq('ODataDemo') }
   end
 
-  describe "#schemas" do
+  context 'when there is multiple schemas defined in the csdl' do
     let(:multiple_schemas_service) { OData::Service.new "https://sandbox.api.sap.com/successfactors/odata/v2", metadata_file: "#{RSPEC_ROOT}/fixtures/sample_service/multiple_schemas_csdl.xml" }
 
-    it { expect(multiple_schemas_service.schemas.size).to eq(2) }
-    it { expect(multiple_schemas_service.schemas.keys).to eq ["SFODataSet", "SFOData"] }
-    it { expect(multiple_schemas_service.schemas.values).to all(be_a(OData::Schema)) }
+    describe "#schemas" do
+      it { expect(multiple_schemas_service.schemas.size).to eq(2) }
+      it { expect(multiple_schemas_service.schemas.keys).to eq ["SFODataSet", "SFOData"] }
+      it { expect(multiple_schemas_service.schemas.values).to all(be_a(OData::Schema)) }
+    end
+
+    describe "#navigation_properties" do
+      it { expect(multiple_schemas_service.navigation_properties["JobRequisition"]["currentOwner"]).to be_a(OData::Association) }
+    end
   end
 end
