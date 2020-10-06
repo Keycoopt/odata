@@ -10,6 +10,7 @@ RSpec.describe OData::Schema do
   describe 'instance methods' do
     it { expect(schema).to respond_to(:namespace) }
     it { expect(schema).to respond_to(:entity_types) }
+    it { expect(schema).to respond_to(:inspect) }
   end
 
   describe '#namespace' do
