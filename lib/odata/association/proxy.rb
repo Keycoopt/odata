@@ -55,7 +55,6 @@ module OData
         results = service.execute(link[:href])
         options = {
             type:         association_end.entity_type,
-            namespace:    namespace,
             service_name: entity.service_name
         }
 

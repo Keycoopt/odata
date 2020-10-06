@@ -8,7 +8,6 @@ describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
   let(:subject) { OData::Entity.new(options) }
   let(:options) { {
       type:         'ODataDemo.Product',
-      namespace:    'ODataDemo',
       service_name: 'ODataDemo'
   } }
 
@@ -73,7 +72,6 @@ describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
     context 'with a complex type property' do
       let(:options) { {
           type:         'ODataDemo.Supplier',
-          namespace:    'ODataDemo',
           service_name: 'ODataDemo'
       } }
 
