@@ -95,14 +95,19 @@ module OData
 
     # Returns the namespace defined on the service's schema
     def namespace
-      @namespace ||= metadata.xpath('//Schema').first.attributes['Namespace'].value
+      @namespace ||= schemas.values.first.namespace
     end
 
     # Returns the service's schemas
     def schemas
       @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
-        Schema.new(schema_xml, self).namespace
-      end
+        schema = Schema.new(schema_xml, self)
+
+        [
+          schema.namespace,
+          schema
+        ]
+      end.to_h
     end
 
     # Returns a more compact inspection of the service object
