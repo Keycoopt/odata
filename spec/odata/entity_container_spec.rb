@@ -11,6 +11,8 @@ RSpec.describe OData::EntityContainer do
     it { expect(entity_container).to respond_to(:namespace) }
     it { expect(entity_container).to respond_to(:inspect) }
     it { expect(entity_container).to respond_to(:entity_sets) }
+    it { expect(entity_container).to respond_to(:service) }
+    it { expect(entity_container).to respond_to(:schema) }
   end
 
   describe '#name' do

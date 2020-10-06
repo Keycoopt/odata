@@ -95,7 +95,7 @@ module OData
 
     # Returns the namespace defined on the service's schema
     def namespace
-      @namespace ||= schemas.values.first.namespace
+      entity_container.namespace
     end
 
     # Returns the service's schemas
