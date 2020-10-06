@@ -98,6 +98,13 @@ module OData
       @namespace ||= metadata.xpath('//Schema').first.attributes['Namespace'].value
     end
 
+    # Returns the service's schemas
+    def schemas
+      @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
+        schema_xml.attributes['Namespace'].value
+      end
+    end
+
     # Returns a more compact inspection of the service object
     def inspect
       "#<#{self.class.name}:#{self.object_id} name='#{name}' service_url='#{self.service_url}'>"

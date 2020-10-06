@@ -9,7 +9,6 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
                           Product_ProductDetail_ProductDetail_Product
                           FeaturedProduct_Advertisement_Advertisement_FeaturedProduct
                           Person_PersonDetail_PersonDetail_Person} }
-
   describe '.open' do
     it { expect(OData::Service).to respond_to(:open) }
   end
@@ -72,5 +71,11 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '#namespace' do
     it { expect(subject.namespace).to eq('ODataDemo') }
+  end
+
+  describe "#schemas" do
+    let(:multiple_schemas_service) { OData::Service.new "https://sandbox.api.sap.com/successfactors/odata/v2", metadata_file: "#{RSPEC_ROOT}/fixtures/sample_service/multiple_schemas_csdl.xml" }
+
+    it { expect(multiple_schemas_service.schemas).to eq ["SFODataSet", "SFOData"] }
   end
 end

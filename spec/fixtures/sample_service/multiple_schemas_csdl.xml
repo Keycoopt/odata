@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Edmx Version="1.0">
+  <DataServices DataServiceVersion="2.0">
+    <Schema Namespace="SFODataSet">
+      <EntityContainer Name="EntityContainer" IsDefaultEntityContainer="true">
+        <EntitySet Name="Entity" EntityType="SFOData.Entity" label="Entity" creatable="false" updatable="false" upsertable="false" deletable="false"/>
+        <EntitySet Name="JobRequisition" EntityType="SFOData.JobRequisition" label="JobRequisition" creatable="true" updatable="true" upsertable="true" deletable="true">
+          <Documentation>
+            <Summary>Job Requisition</Summary>
+            <LongDescription>The job requisition entity contains core requisition data consisting of system, standard and custom fields. The metadata will show the standard and custom fields configured in all the active templates. If a field (standard or custom) is not configured in any of the active template, then it will not show up in the metadata and not be a part of OData query</LongDescription>
+            <tagcollection>
+              <tag>Recruiting (RCM)</tag>
+              <tag>RCM - Job Requisition</tag>
+              <tag>Recommended</tag>
+            </tagcollection>
+          </Documentation>
+        </EntitySet>
+        <AssociationSet Name="RcmJobReq_Operator_currentOwner" Association="SFOData.RcmJobReq_Operator_currentOwner">
+          <End EntitySet="JobRequisition" Role="JobRequisition"/>
+          <End EntitySet="JobRequisitionOperator" Role="JobRequisitionOperator"/>
+        </AssociationSet>
+      </EntityContainer>
+    </Schema>
+    <Schema Namespace="SFOData">
+      <EntityType Name="Entity">
+        <Key>
+          <PropertyRef Name="path"/>
+        </Key>
+        <Property Name="deletable" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="deletable"/>
+        <Property Name="deletablePath" Type="Edm.String" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="deletablePath"/>
+        <Property Name="effectiveDated" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="effectiveDated"/>
+        <Property Name="insertable" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="insertable"/>
+        <Property Name="keyProperties" Type="SFOData.property" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" CollectionKind="Bag" label="keyProperties"/>
+        <Property Name="label" Type="SFOData.localstring" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="label"/>
+        <Property Name="name" Type="Edm.String" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="name"/>
+        <Property Name="navigationProperties" Type="SFOData.navigation" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" CollectionKind="Bag" label="navigationProperties"/>
+        <Property Name="nonNavigationProperties" Type="SFOData.property" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" CollectionKind="Bag" label="nonNavigationProperties"/>
+        <Property Name="path" Type="Edm.String" Nullable="false" required="true" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="path"/>
+        <Property Name="properties" Type="SFOData.property" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" CollectionKind="Bag" label="properties"/>
+        <Property Name="searchable" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="searchable"/>
+        <Property Name="supportElm" Type="Edm.Boolean" Nullable="false" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="supportElm"/>
+        <Property Name="updatable" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="updatable"/>
+        <Property Name="updatablePath" Type="Edm.String" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="updatablePath"/>
+        <Property Name="upsertable" Type="Edm.Boolean" Nullable="true" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="upsertable"/>
+      </EntityType>
+      <EntityType Name="JobRequisition">
+        <Key>
+          <PropertyRef Name="jobReqId"/>
+        </Key>
+        <Property Name="age" Type="Edm.Int64" Nullable="false" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="false" filterable="false" label="Age"/>
+        <Property Name="instrReqDetails" Type="Edm.String" Nullable="true" required="false" creatable="true" updatable="true" upsertable="true" visible="true" sortable="false" filterable="false" field-control="jobReqPermissionsNav/instrReqDetails" label=" Job Details "/>
+        <NavigationProperty Name="currentOwner" required="false" creatable="true" updatable="true" upsertable="true" visible="true" sortable="true" filterable="true" Relationship="SFOData.RcmJobReq_Operator_currentOwner" FromRole="JobRequisition" ToRole="JobRequisitionOperator" field-control="jobReqPermissionsNav/currentOwner" label="CurrentOwner"/>
+      </EntityType>
+      <EntityType Name="JobRequisitionOperator">
+        <Key>
+          <PropertyRef Name="jobReqId"/>
+          <PropertyRef Name="operatorRole"/>
+        </Key>
+        <Property Name="email" Type="Edm.String" Nullable="false" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="true" filterable="true" label="Operator email id"/>
+        <Property Name="firstName" Type="Edm.String" Nullable="false" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="true" filterable="true" label="Operator First Name"/>
+        <Property Name="lastName" Type="Edm.String" Nullable="false" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="true" filterable="true" label="Operator Last Name"/>
+        <NavigationProperty Name="jobRequisition" required="false" creatable="false" updatable="false" upsertable="false" visible="true" sortable="true" filterable="true" Relationship="SFOData.RcmJobReqOperator_parent_jobRequisition_assos_id" FromRole="JobRequisitionOperator" ToRole="JobRequisition" label="Job Requisition"/>
+      </EntityType>
+      <Association Name="RcmJobReq_Operator_currentOwner">
+        <End Type="SFOData.JobRequisition" Multiplicity="1" Role="JobRequisition"/>
+        <End Type="SFOData.JobRequisitionOperator" Multiplicity="*" Role="JobRequisitionOperator"/>
+      </Association>
+    </Schema>
+  </DataServices>
+</Edmx>
