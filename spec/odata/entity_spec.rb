@@ -22,8 +22,7 @@ describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
   describe '#links' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/product_0.xml'))
-      document.remove_namespaces!
+      document = load_xml_document("#{RSPEC_ROOT}/fixtures/sample_service/product_0.xml")
       document.xpath('//entry').first
     }
     let(:links) do
@@ -48,8 +47,7 @@ describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
   describe '.from_xml' do
     let(:subject) { OData::Entity.from_xml(product_xml, options) }
     let(:product_xml) {
-      document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/product_0.xml'))
-      document.remove_namespaces!
+      document = load_xml_document("#{RSPEC_ROOT}/fixtures/sample_service/product_0.xml")
       document.xpath('//entry').first
     }
 
@@ -81,8 +79,7 @@ describe OData::Entity, vcr: {cassette_name: 'entity_specs'} do
 
       let(:subject) { OData::Entity.from_xml(supplier_xml, options) }
       let(:supplier_xml) {
-        document = ::Nokogiri::XML(File.open('spec/fixtures/sample_service/supplier_0.xml'))
-        document.remove_namespaces!
+        document = load_xml_document("#{RSPEC_ROOT}/fixtures/sample_service/supplier_0.xml")
         document.xpath('//entry').first
       }
 
