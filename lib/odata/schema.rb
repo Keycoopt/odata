@@ -13,5 +13,13 @@ module OData
     def namespace
       @namespace ||= metadata.attributes['Namespace'].value
     end
+
+    # The Schema's entity types
+    # @return [Array<String>]
+    def entity_types
+      @entity_types ||= metadata.xpath('./EntityType').collect do |entity_type|
+        entity_type.attributes['Name'].value
+      end
+    end
   end
 end

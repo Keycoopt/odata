@@ -49,7 +49,7 @@ module OData
 
     # Returns a list of entities exposed by the service
     def entity_types
-      @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
+      @entity_types ||= schemas.values.map(&:entity_types).flatten
     end
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name

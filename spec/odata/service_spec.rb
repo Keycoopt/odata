@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe OData::Service, vcr: {cassette_name: 'service_specs'} do
   let(:subject) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo') }
-  let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
   let(:associations) { %w{Product_Categories_Category_Products
                           Product_Supplier_Supplier_Products
@@ -37,11 +36,6 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '#service_url' do
     it { expect(subject.service_url).to eq('http://services.odata.org/OData/OData.svc') }
-  end
-
-  describe '#entity_types' do
-    it { expect(subject.entity_types.size).to eq(10) }
-    it { expect(subject.entity_types).to eq(entity_types) }
   end
 
   describe '#complex_types' do
