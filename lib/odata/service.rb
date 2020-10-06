@@ -49,7 +49,7 @@ module OData
 
     # Returns a list of entities exposed by the service
     def entity_types
-      @entity_types ||= metadata.xpath('//EntityType').collect {|entity| entity.attributes['Name'].value}
+      @entity_types ||= schemas.values.map(&:entity_types).flatten
     end
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name
@@ -77,25 +77,39 @@ module OData
     # NavigationProperty elements.
     # @return [Hash<Hash<OData::Association>>]
     def navigation_properties
-      @navigation_properties ||= Hash[metadata.xpath('//EntityType').collect do |entity_type_def|
+      @navigation_properties ||= metadata.xpath('//EntityType').collect do |entity_type_def|
         entity_type_name = entity_type_def.attributes['Name'].value
+
         [
             entity_type_name,
-            Hash[entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
-              relationship_name = nav_property_def.attributes['Relationship'].value
-              relationship_name.gsub!(/^#{namespace}\./, '')
+            entity_type_def.xpath('./NavigationProperty').collect do |nav_property_def|
+              relationship = nav_property_def.attributes['Relationship'].value
+              namespace, _, relationship_name = relationship.rpartition('.')
+
               [
                   nav_property_def.attributes['Name'].value,
                   associations[relationship_name]
               ]
-            end]
+            end.to_h
         ]
-      end]
+      end.to_h
     end
 
     # Returns the namespace defined on the service's schema
     def namespace
-      @namespace ||= metadata.xpath('//Schema').first.attributes['Namespace'].value
+      entity_container.namespace
+    end
+
+    # Returns the service's schemas
+    def schemas
+      @schemas ||= metadata.xpath('//Schema').map do |schema_xml|
+        schema = Schema.new(schema_xml, self)
+
+        [
+          schema.namespace,
+          schema
+        ]
+      end.to_h
     end
 
     # Returns a more compact inspection of the service object
@@ -225,6 +239,12 @@ module OData
       @logger = custom_logger
     end
 
+    def metadata
+      @metadata ||= lambda {
+        read_metadata
+      }.call
+    end
+
     private
 
     def default_options
@@ -234,12 +254,6 @@ module OData
               timeout: HTTP_TIMEOUT
           }
       }
-    end
-
-    def metadata
-      @metadata ||= lambda {
-        read_metadata
-      }.call
     end
 
     def read_metadata

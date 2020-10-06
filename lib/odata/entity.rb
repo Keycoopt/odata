@@ -7,8 +7,6 @@ module OData
   class Entity
     # The Entity type name
     attr_reader :type
-    # The OData::Service's namespace
-    attr_reader :namespace
     # The OData::Service's identifying name
     attr_reader :service_name
     # Links to other OData entitites
@@ -22,16 +20,21 @@ module OData
     # @param options [Hash]
     def initialize(options = {})
       @type = options[:type]
-      @namespace = options[:namespace]
       @service_name = options[:service_name]
       @links = options[:links] || {}
       @errors = []
     end
 
+    # Returns namespace of Entity from its EntityType
+    # @return [String]
+    def namespace
+      @namespace ||= type.rpartition('.').first
+    end
+
     # Returns name of Entity from Service specified type.
     # @return [String]
     def name
-      @name ||= type.gsub(/#{namespace}\./, '')
+      @name ||= type.rpartition('.').last
     end
 
     # Get property value

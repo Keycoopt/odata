@@ -19,7 +19,12 @@ module OData
 
     # The EntityContainer's namespace
     def namespace
-      service.namespace
+      schema.namespace
+    end
+
+    # The parent schema of the EntityContainer
+    def schema
+      @schema ||= OData::Schema.new(metadata.ancestors("Schema").first, service)
     end
 
     # Returns a hash of EntitySet names keyed to their respective EntityType name

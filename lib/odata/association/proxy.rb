@@ -10,7 +10,7 @@ module OData
           raise ArgumentError, "unknown association: #{association_name}"
         elsif entity.links[association_name].nil?
           association = associations[association_name]
-          association_end = association.ends.select {|details| details.entity_type != "#{namespace}.#{entity_type}"}.first
+          association_end = association.ends.select { |details| details.entity_type != entity_type }.first
           raise RuntimeError, 'association ends undefined' if association_end.nil?
           if association_end.multiplicity == :many
             []
@@ -38,24 +38,27 @@ module OData
         @namespace ||= service.namespace
       end
 
+      def entity_name
+        @entity_name ||= entity.name
+      end
+
       def entity_type
-        @entity_type ||= entity.name
+        @entity_type ||= entity.type
       end
 
       def associations
-        @associations ||= service.navigation_properties[entity_type]
+        @associations ||= service.navigation_properties[entity_name]
       end
 
       def association_results(association_name)
         association = associations[association_name]
         link = entity.links[association_name]
-        association_end = association.ends.select {|details| details.entity_type != "#{namespace}.#{entity_type}"}.first
+        association_end = association.ends.select { |details| details.entity_type != entity_type }.first
         raise RuntimeError, 'association ends undefined' if association_end.nil?
 
         results = service.execute(link[:href])
         options = {
             type:         association_end.entity_type,
-            namespace:    namespace,
             service_name: entity.service_name
         }
 

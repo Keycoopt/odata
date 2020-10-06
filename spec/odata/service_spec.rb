@@ -2,14 +2,12 @@ require 'spec_helper'
 
 describe OData::Service, vcr: {cassette_name: 'service_specs'} do
   let(:subject) { OData::Service.open('http://services.odata.org/OData/OData.svc', name: 'ODataDemo') }
-  let(:entity_types) { %w{Product FeaturedProduct ProductDetail Category Supplier Person Customer Employee PersonDetail Advertisement} }
   let(:complex_types) { %w{Address} }
   let(:associations) { %w{Product_Categories_Category_Products
                           Product_Supplier_Supplier_Products
                           Product_ProductDetail_ProductDetail_Product
                           FeaturedProduct_Advertisement_Advertisement_FeaturedProduct
                           Person_PersonDetail_PersonDetail_Person} }
-
   describe '.open' do
     it { expect(OData::Service).to respond_to(:open) }
   end
@@ -33,15 +31,11 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
     it { expect(subject).to respond_to(:namespace) }
     it { expect(subject).to respond_to(:entity_container) }
     it { expect(subject).to respond_to(:[])}
+    it { expect(subject).to respond_to(:metadata) }
   end
 
   describe '#service_url' do
     it { expect(subject.service_url).to eq('http://services.odata.org/OData/OData.svc') }
-  end
-
-  describe '#entity_types' do
-    it { expect(subject.entity_types.size).to eq(10) }
-    it { expect(subject.entity_types).to eq(entity_types) }
   end
 
   describe '#complex_types' do
@@ -71,5 +65,19 @@ describe OData::Service, vcr: {cassette_name: 'service_specs'} do
 
   describe '#namespace' do
     it { expect(subject.namespace).to eq('ODataDemo') }
+  end
+
+  context 'when there is multiple schemas defined in the csdl' do
+    let(:multiple_schemas_service) { OData::Service.new "https://sandbox.api.sap.com/successfactors/odata/v2", metadata_file: "#{RSPEC_ROOT}/fixtures/sample_service/multiple_schemas_csdl.xml" }
+
+    describe "#schemas" do
+      it { expect(multiple_schemas_service.schemas.size).to eq(2) }
+      it { expect(multiple_schemas_service.schemas.keys).to eq ["SFODataSet", "SFOData"] }
+      it { expect(multiple_schemas_service.schemas.values).to all(be_a(OData::Schema)) }
+    end
+
+    describe "#navigation_properties" do
+      it { expect(multiple_schemas_service.navigation_properties["JobRequisition"]["currentOwner"]).to be_a(OData::Association) }
+    end
   end
 end
